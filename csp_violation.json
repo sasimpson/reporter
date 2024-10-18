@@ -1,0 +1,19 @@
+[
+    {
+        "body": {
+            "blockedURL": "https://code.jquery.com/jquery-3.7.1.slim.min.js",
+            "columnNumber": null,
+            "disposition": "report",
+            "documentURL": "http://localhost:8080/",
+            "effectiveDirective": "script-src-elem",
+            "lineNumber": null,
+            "originalPolicy": "default-src 'self'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-to csp-endpoint;",
+            "referrer": "",
+            "sample": "",
+            "sourceFile": null,
+            "statusCode": 200
+        },
+        "type": "csp-violation",
+        "url": "http://localhost:8080/"
+    }
+]
