@@ -85,3 +85,9 @@ you can then run the binary:
 
 You can reach the sample page in your browser at http://localhost:8080 and should see the structured logging example on the console output.
 
+You can also run with docker:
+
+    docker build -t csp-reporter:latest .
+    docker run -it --rm -p 8080:8080 csp-reporter:latest
+
+same url as above, you can watch the logs in the docker logs.
