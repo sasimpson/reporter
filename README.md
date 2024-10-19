@@ -66,3 +66,22 @@ It is possible to have multiple `Reporting-To` endpoints, they need to be separa
 ## Tips
 
 Use a `Content-Security-Policy-Report-Only` intially and report the violations to see what parts of your policy might not pass and could break your app.  Additionally you can set the `Content-Security-Policy` to something less strict, report to one endpoint, and make the `Content-Security-Policy-Only` to a stricter set of policies to get data about who is doing what. 
+
+## Running/Installation
+
+This application uses [Go](https://go.dev), so to build you will need to install.  It is a versatile and powerful language, if you haven't, you should check it out.
+
+To run:
+
+    go run main.go
+
+To build: 
+
+    go build -o reporter github.com/sasimpson/reporter
+
+you can then run the binary:
+
+    ./reporter
+
+You can reach the sample page in your browser at http://localhost:8080 and should see the structured logging example on the console output.
+

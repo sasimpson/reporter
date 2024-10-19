@@ -13,6 +13,7 @@ import (
 var (
 	//go:embed templates/index.html.tmpl
 	indexTemplate string
+	logger        *log.Logger
 )
 
 type Report struct {
@@ -31,12 +32,11 @@ type Report struct {
 
 func main() {
 
-	logger := slog.NewLogLogger(slog.NewJSONHandler(os.Stdout, nil), slog.LevelInfo)
+	logger = slog.NewLogLogger(slog.NewJSONHandler(os.Stdout, nil), slog.LevelInfo)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /test", ViolationMakerHandler)
+	mux.HandleFunc("/", ViolationMakerHandler)
 	mux.HandleFunc("POST /cspro", CSPViolationHandler)
-	mux.HandleFunc("POST /", CSPViolationHandler)
 
 	server := &http.Server{
 		Addr:     ":8080",
@@ -44,6 +44,7 @@ func main() {
 		ErrorLog: logger,
 	}
 
+	logger.Print("starting service on port :8080")
 	err := server.ListenAndServe()
 	if err != nil {
 		return
@@ -65,9 +66,11 @@ func CSPViolationHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ViolationMakerHandler(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Reporting-To", `cspro="http://localhost:8080`)
-	// w.Header().Set("Content-Security-Policy", "default-src '*'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-uri csp-endpoint;")
+	// If you wanted to hard block anything not adhering to the CSP, you can replace the
+	// Content-Security-Policy-Report-Only with Content-Security-Policy.
 	w.Header().Set("Content-Security-Policy-Report-Only", "default-src 'self'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-uri cspro;")
+	// locations to report any violations to, will add the "name" to the url
+	w.Header().Set("Reporting-To", `cspro="http://localhost:8080`)
 
 	t, err := template.New("index").Parse(indexTemplate)
 	if err != nil {
