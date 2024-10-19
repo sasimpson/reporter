@@ -1,12 +1,18 @@
 package main
 
 import (
+	_ "embed"
 	"encoding/json"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
 	"text/template"
+)
+
+var (
+	//go:embed templates/index.html.tmpl
+	indexTemplate string
 )
 
 type Report struct {
@@ -21,11 +27,6 @@ type Report struct {
 		StatusCode         int    `json:"status-code"`
 		ScriptSample       string `json:"script-sample"`
 	} `json:"csp-report"`
-}
-
-type RequestInfo struct {
-	Host string
-	URL  string
 }
 
 func main() {
@@ -43,7 +44,10 @@ func main() {
 		ErrorLog: logger,
 	}
 
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		return
+	}
 }
 
 func CSPViolationHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,17 +64,20 @@ func CSPViolationHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func ViolationMakerHandler(w http.ResponseWriter, r *http.Request) {
+func ViolationMakerHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Reporting-To", `cspro="http://localhost:8080`)
 	// w.Header().Set("Content-Security-Policy", "default-src '*'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-uri csp-endpoint;")
 	w.Header().Set("Content-Security-Policy-Report-Only", "default-src 'self'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-uri cspro;")
 
-	t, err := template.ParseFiles("./templates/index.html.tmpl")
+	t, err := template.New("index").Parse(indexTemplate)
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	t.Execute(w, nil)
+	err = t.Execute(w, nil)
+	if err != nil {
+		return
+	}
 }
