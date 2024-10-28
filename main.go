@@ -39,12 +39,12 @@ func main() {
 	mux.HandleFunc("POST /cspro", CSPViolationHandler)
 
 	server := &http.Server{
-		Addr:     ":8080",
+		Addr:     ":5000",
 		Handler:  mux,
 		ErrorLog: logger,
 	}
 
-	logger.Print("starting service on port :8080")
+	logger.Print("starting service on port :5000")
 	err := server.ListenAndServe()
 	if err != nil {
 		return
@@ -70,7 +70,7 @@ func ViolationMakerHandler(w http.ResponseWriter, _ *http.Request) {
 	// Content-Security-Policy-Report-Only with Content-Security-Policy.
 	w.Header().Set("Content-Security-Policy-Report-Only", "default-src 'self'; script-src 'sha256-oFpGexFYa81iRs0wnRObU36W0bkPCqdNLJg7Vggphvk='; report-uri cspro;")
 	// locations to report any violations to, will add the "name" to the url
-	w.Header().Set("Reporting-To", `cspro="http://localhost:8080`)
+	w.Header().Set("Reporting-To", `cspro="http://localhost:5000`)
 
 	t, err := template.New("index").Parse(indexTemplate)
 	if err != nil {

@@ -8,5 +8,5 @@ RUN CGO_ENABLED=0 go build -o reporter ./main.go
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /src/reporter /app/reporter
-EXPOSE 8080
+EXPOSE 5000
 CMD ["/app/reporter"]

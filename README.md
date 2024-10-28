@@ -51,13 +51,13 @@ Using the `Reporting-To` header, violations of the CSP or CSP-Report-Only can be
 
 In order to use this, add the `Reporting-To` header to the HTTP header:
 
-    Reporting-To: csp="http://localhost:8080/csp"
+    Reporting-To: csp="http://localhost:5000/csp"
 
 And similarly add the report-uri field to your CSP/CSPRO header:
 
     Content-Security-Policy: default-src: 'site'; script-src: https://cdn.jquery.com; report-uri=csp
 
-This will generate a report for the CSP violation and POST that JSON to the `csp` endpoint which is `http://localhost:8080/csp` in this case.  
+This will generate a report for the CSP violation and POST that JSON to the `csp` endpoint which is `http://localhost:5000/csp` in this case.  
 
 **note** - this requires a secure disposition to use, so https must be used for the reporting *except* when using `localhost` or `127.0.0.1`.
 
@@ -83,11 +83,11 @@ you can then run the binary:
 
     ./reporter
 
-You can reach the sample page in your browser at http://localhost:8080 and should see the structured logging example on the console output.
+You can reach the sample page in your browser at http://localhost:5000 and should see the structured logging example on the console output.
 
 You can also run with docker:
 
     docker build -t csp-reporter:latest .
-    docker run -it --rm -p 8080:8080 csp-reporter:latest
+    docker run -it --rm -p 5000:5000 csp-reporter:latest
 
 same url as above, you can watch the logs in the docker logs.
